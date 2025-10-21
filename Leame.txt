@@ -1,0 +1,5 @@
+01-ListasInt: Ejemplo introductorio con enteros.
+02-ListasStruct: Cambiamos a usar estructuras y notamos que el manejo de las listas en si no cambian.
+03-ListasTemplate: Usamos templates para lograr genericidad.
+04-ListasTemplateAvan: Separamos las rutinas de listas en un .hpp simulando tener una biblioteca.
+
