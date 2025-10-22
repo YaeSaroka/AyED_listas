@@ -131,6 +131,85 @@ Nodo<Producto>* InsertarOrdenadoPorProducto(Nodo<Producto>* &lista_productos, Pr
     }
 }
 
+void CantidadVentasPorMedioPago (Nodo<Ciudad>* listado_ciudad)
+{
+    Nodo<Ciudad>* actual=listado_ciudad;
+    int contador_ventas_bv=0;
+    int contador_ventas_ef=0;
+    int contador_ventas_tc=0;
+    int contador_ventas_td=0;
+
+    while (actual!=nullptr)
+    {
+        Nodo<Producto>* producto_Actual= actual->dato.lista_productos;
+        while(producto_Actual!=nullptr)
+        {
+            Nodo<MedioPago>* medio_Actual= producto_Actual->dato.venta_por_medio;
+            while (medio_Actual!=nullptr)
+            {
+                if(medio_Actual->dato.MedioPago == "BV")
+                {
+                    contador_ventas_bv++;
+                    medio_Actual=medio_Actual->sig;
+                }
+                else if( medio_Actual->dato.MedioPago == "EF")
+                {
+                    contador_ventas_ef++;
+                    medio_Actual=medio_Actual->sig;
+                }
+                else if( medio_Actual->dato.MedioPago == "TC")
+                {
+                    contador_ventas_tc++;
+                    medio_Actual=medio_Actual->sig;
+                }
+                else
+                {
+                    contador_ventas_td++;
+                    medio_Actual=medio_Actual->sig;
+                }
+            }
+            producto_Actual=producto_Actual->sig;
+            
+        }
+        actual=actual->sig;
+        
+    }
+    cout<<"TOTAL VENTAS POR MEDIO DE PAGO: "<<endl;
+    cout<< "BV: "<<contador_ventas_bv<<endl;
+    cout<<"EF: "<<contador_ventas_ef<<endl;
+    cout<<"TC: "<<contador_ventas_tc<<endl;
+    cout<<"TD: "<<contador_ventas_td<<endl;
+    
+}
+
+int BuscarPorProducto_MedioPago(Nodo<Ciudad>* listado_ciudades, string producto_buscado, string medio_buscado)
+{
+    Nodo<Ciudad>* ciudadActual=listado_ciudades;
+    
+   
+    int contador_ventas=0;
+
+    while (ciudadActual!=nullptr)
+    {
+        Nodo<Producto>* productoActual=ciudadActual->dato.lista_productos;
+        while (productoActual!=nullptr)
+        {
+            Nodo<MedioPago>* medio_actual= productoActual->dato.venta_por_medio;
+            while (medio_actual!=nullptr)
+            { 
+                if(productoActual->dato.Producto==producto_buscado && medio_actual->dato.MedioPago==medio_buscado)
+                {
+                    contador_ventas++;
+                }
+                medio_actual=medio_actual->sig;   
+            }
+            productoActual=productoActual->sig;
+        }
+        ciudadActual=ciudadActual->sig;
+    }
+    return contador_ventas;
+}
+
 int main()
 {
     Nodo<Ciudad>* lista_ciudades= nullptr;
@@ -193,7 +272,19 @@ int main()
 
     listado_final = listado_final->sig;
 }
-    
+    //PUNTO 2
+    CantidadVentasPorMedioPago(lista_ciudades);
+
+    //Punto 3
+    string producto_buscar;
+    string medio_pago_buscar;
+    cout<<"Ingrese el producto que desee buscar: "<<endl;
+    cin>>producto_buscar;
+    cout<<"Ingrese el medio de pago: "<<endl;
+    cin>>medio_pago_buscar;
+    int contador_ventas=0;
+    contador_ventas=BuscarPorProducto_MedioPago(lista_ciudades,producto_buscar,medio_pago_buscar);
+    cout<<"Cantidad de ventas de ese porducto con ese medio: "<<contador_ventas<<endl;
     return 0;
 }
 
