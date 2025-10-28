@@ -116,6 +116,107 @@ void CalcularTotales(Nodo<Registro>* lista_registros, float &CantidadEnergiaProd
     }
 }
 
+void BuscarCombinacion(Nodo<Pais>* listado_paises, string pais_buscado, string empresa_buscada)
+{
+    Nodo<Pais>* actual = listado_paises;
+    Nodo<Pais>* combinacionSigPais = nullptr;
+    Nodo<Empresa>* combinacionSigEmpresa = nullptr;
+    bool encontrada = false;
+    float promedio =0;
+
+    while (actual != nullptr)
+    {
+        if (actual->dato.Pais == pais_buscado)
+        {
+            Nodo<Empresa>* empresa_Actual = actual->dato.lista_empresas;
+            while (empresa_Actual != nullptr)
+            {
+                if (empresa_Actual->dato.Empresa == empresa_buscada)
+                {
+                    float cantidad_energia = 0;
+                    int cantidad_dias = 0;
+                    Nodo<Registro>* registro = empresa_Actual->dato.lista_registros;
+
+                    while (registro != nullptr)
+                    {
+                        cantidad_energia += registro->dato.EnergiaProducida;
+                        cantidad_dias++;
+                        registro = registro->sig;
+                    }
+
+                    float promedio = cantidad_energia / cantidad_dias;
+                    cout << "Promedio: " << promedio << endl;
+
+                    
+                    combinacionSigEmpresa = empresa_Actual->sig; 
+                    combinacionSigPais = actual->sig;
+
+                    
+                    Nodo<Registro>* lista = empresa_Actual->dato.lista_registros;
+                    Nodo<Registro>* listaOrdenada = nullptr;
+                    
+                    while (lista != nullptr)
+                    {
+                        if (lista->dato.Costo < 1000)
+                            InsertarOrdenado(listaOrdenada, lista->dato,CriterioDescendente);
+                        lista = lista->sig;
+                    }
+                    Nodo<Registro>* r = listaOrdenada;
+                    while (r != nullptr)
+                    {
+                        cout << r->dato.TipoPlanta << " - " << r->dato.Costo << endl;
+                        r = r->sig;
+                    }
+
+                    encontrada = true;
+                }
+                empresa_Actual = empresa_Actual->sig;
+            }
+        }
+        actual = actual->sig;
+    }
+    if (!encontrada)
+    {
+        cout << "No se encontro la combinacion solicitada." << endl;
+        return;
+    }
+    //PROMEDIO SIGUIENTE
+    float promedioSig = -1;  
+    Nodo<Empresa>* empresaSig = nullptr;
+
+    if (combinacionSigPais != nullptr) {
+        empresaSig = combinacionSigPais->dato.lista_empresas;
+    } else if (combinacionSigEmpresa != nullptr) {
+        empresaSig = combinacionSigEmpresa;
+    }
+    // Calculamos el promedio si encontramos una empresa
+    if (empresaSig != nullptr) {
+        float cantEnergia = 0;
+        int cantDias = 0;
+        Nodo<Registro>* regSig = empresaSig->dato.lista_registros;
+        while (regSig != nullptr) {
+            cantEnergia += regSig->dato.EnergiaProducida;
+            cantDias++;
+            regSig = regSig->sig;
+        }
+        promedioSig =  cantEnergia / cantDias;
+    }
+    if (promedioSig >= 0)
+    {
+        if (promedio > promedioSig)
+            cout << "El promedio de la combinacion buscada es mayor que la siguiente." << endl;
+        else if (promedio < promedioSig)
+            cout << "El promedio de la combinacion buscada es menor que la siguiente." << endl;
+        else
+            cout << "El promedio de la combinacion buscada es igual al de la siguiente." << endl;
+    }
+    else
+    {
+        cout << "No hay siguiente combinacion para comparar." << endl;
+    }
+}
+
+
 int main()
 {
     Nodo<Pais>* listado_paises=nullptr;
@@ -168,37 +269,22 @@ int main()
                         cout << "Tipo: " << aux->dato.TipoPlanta
                             << " | Costo: " << aux->dato.Costo << endl;
                         aux = aux->sig;
-                    }
-                        
+                    }     
                 }
                 lista_empresas=lista_empresas->sig;
         }
         lista_paises=lista_paises->sig;
-        
     }
     
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-    
-   
-    
-    
-    
-
-
-
-
-
+    //PUNTO 3
+    string pais_buscado, empresa_buscado;
+    while (pais_buscado!="EOF" || empresa_buscado!="EOF")
+    {
+        cout<<"Ingrese el pais que desea buscar: "<<endl;
+        cin>>pais_buscado;
+        cout<<"Ingrese la empresa que desea buscar: "<<endl;
+        cin>>empresa_buscado;
+        BuscarCombinacion(listado_paises,pais_buscado,empresa_buscado);
+    }
 }
 
